@@ -26,7 +26,7 @@ class Calibre():
         self.vpen = [(int(x) if x else 0) for x in row[3:]]
 
     def set_hpen(self, row):
-        self.hpen = [(int(x) if x else 0) for x in row[3:]]
+        self.hpen = [(int(x) if x else 0) for x, vpen in zip(row[3:], self.vpen)]
 
 calibres = { x : Calibre() for x in range(2, 21) }
 
@@ -62,7 +62,7 @@ with open(os.path.join(data_dir, 'hpen.dat')) as hpen_file:
         except:
             pass
 
-def pen_table(attr):
+def pen_table(attr, range_start):
     result = '<table style="text-align:right;">\n'
     result += '<tr>'
     result += '<th rowspan="2">Range (kyd)</th>'
@@ -72,7 +72,7 @@ def pen_table(attr):
     for calibre in range(4, 21):
         result += '<th style="width:24pt;">%d"</th>' % calibre
     result += '</tr>\n'
-    for r in range(1, 31):
+    for r in range(range_start, 31):
         result += '<tr>'
         result += '<th>%d</th>' % r
         for calibre in range(4, 21):
@@ -87,7 +87,7 @@ def pen_table(attr):
     return result
 
 with open('vpen.txt', mode = 'w') as vpen_out:
-    vpen_out.write(pen_table('vpen'))
+    vpen_out.write(pen_table('vpen', 1))
 
 with open('hpen.txt', mode = 'w') as hpen_out:
-    hpen_out.write(pen_table('hpen'))
+    hpen_out.write(pen_table('hpen', 6))

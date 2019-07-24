@@ -11,6 +11,10 @@ class Event():
         11 : 'friendly',
         99 : None,
     }
+
+    condition_types = {
+        0 : None,
+    }
     
     def __init__(self, tokens):
         self.options = []
@@ -34,15 +38,19 @@ class Event():
                 result += '* Target: %s nation\n' % target_nation_string
         else:
             result += '* Target: unknown target condition %d\n' % self.target_nation
-        if self.condition not in [0]:
-            result += '* Unknown condition: %d\n' % self.condition
+        if self.condition in self.condition_types:
+            condition_string = self.condition_types[self.condition]
+            if condition_string is not None:
+                result += '* Condition: %s\n' % condition_string
+        else:
+            result += '* Condition: unknown condition %d\n' % self.condition
         return result
 
 class EventOption():
     tension_target_types = {
         0 : 'XX',
         99 : 'XX',
-        10 : 'random nation',
+        10 : 'random nations',
         8 : 'a nation of your choice',
     }
 
@@ -92,7 +100,10 @@ class EventOption():
         result = self.text
         effects = []
         if self.money:
-            effects.append('%+d money' % self.money)
+            if abs(self.money) >= 100:
+                effects.append('%+d national resources?' % (self.money // 100))
+            else:
+                effects.append('%+d budget' % self.money)
         if self.prestige:
             effects.append('%+d prestige' % self.prestige)
         if self.tension:
@@ -122,10 +133,11 @@ with open(os.path.join(data_dir, 'Events.dat')) as f:
 
 result = ''
 for index, event in enumerate(events):
-    result += '## Event %d\n' % (index + 1)
+    result += '== Event %d ==\n' % (index + 1)
     result += event.main_string()
-    result += '### Options\n'
+    result += '=== Options ===\n'
     for option in event.options:
         result += '* %s\n' % option.main_string()
 
-print(result)
+with open('events.txt', mode='w') as outfile:
+    outfile.write(result)

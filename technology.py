@@ -23,10 +23,16 @@ for category, techs in categories.items():
     category_name = re.match('\[(.*) \d+\]', category).group(1)
     result += '=== %s ===\n' % category_name
     result += '{| class = "wikitable"\n'
-    result += '! Tech !! Year !! Unknown !! Unknown !! Unknown !! Effect\n'
-    for tech, year, a, b, c, index, effect in techs:
+    result += '! Lv. \n'
+    result += '! style = "width:50%;" | Tech \n'
+    result += '! Year \n'
+    result += '! ? \n'
+    result += '! ? \n'
+    result += '! ? \n'
+    result += '! style = "width:50%;" | Effect\n'
+    for idx, (tech, year, a, b, c, index, effect) in enumerate(techs):
         result += '|-\n'
-        result += '| ' + ' || '.join((tech, year, a, b, c, effect)) + '\n'
+        result += '| ' + ' || '.join((str(idx + 1), tech, year, a, b, c, effect)) + '\n'
     result += '|}\n'
 
 with open('techs.txt', mode='w') as outfile:
